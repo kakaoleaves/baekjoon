@@ -1,29 +1,42 @@
 #include <iostream>
 #include <vector>
+#include <queue>
+
 using namespace std;
-int n;
-vector<int> v[100001];
-int a[100001],vis[100001];
 
-void go(int here){
-    vis[here] = 1;
-    for(int there : v[here]){
-        if(vis[there]) continue;
-        a[there] = here;
-        go(there);
-    }
+const int MAX = 100010;
+vector<int> v[MAX];
+int parents[MAX];
+int visited[MAX];
 
+void dfs(int start) {
+	visited[start] = 1;
+
+	for (int i = 0; i < v[start].size(); i++) {
+		int next = v[start][i];
+		if (visited[next] == 1) continue;
+		parents[next] = start;
+		dfs(next);
+	}
 }
-int main(){
-    cin >> n;
 
-    for(int i=1; i<n; i++){
-        int a,b;
-        cin >> a >> b;
-        v[a].push_back(b);
-        v[b].push_back(a);
-    }
+int main(void) {
+	int n;
+	scanf("%d", &n);
 
-    go(1);
-    for(int i=2; i<=n; i++) cout << a[i] << '\n';
+	for (int i = 0; i < n - 1; i++) {
+		int a;
+		int b;
+		scanf("%d %d", &a, &b);
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+
+
+	dfs(1);
+	for (int i = 2; i <= n; i++) {
+		printf("%d\n", parents[i]);
+	}
+
+	return 0;
 }
