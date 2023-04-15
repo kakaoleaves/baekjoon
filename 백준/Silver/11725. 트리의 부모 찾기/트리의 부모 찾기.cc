@@ -7,16 +7,21 @@ using namespace std;
 const int MAX = 100010;
 vector<int> v[MAX];
 int parents[MAX];
-int visited[MAX];
 
-void dfs(int start) {
-	visited[start] = 1;
-
-	for (int i = 0; i < v[start].size(); i++) {
-		int next = v[start][i];
-		if (visited[next] == 1) continue;
-		parents[next] = start;
-		dfs(next);
+void bfs(int start) {
+	queue<int> q;
+	q.push(start);
+	parents[start] = 1;
+	while (!q.empty()) {
+		int cur = q.front();
+		q.pop();
+		for (int i = 0; i < v[cur].size(); i++) {
+			int next = v[cur][i];
+			if (parents[next] == 0) {
+				parents[next] = cur;
+				q.push(next);
+			}
+		}
 	}
 }
 
@@ -32,8 +37,7 @@ int main(void) {
 		v[b].push_back(a);
 	}
 
-
-	dfs(1);
+	bfs(1);
 	for (int i = 2; i <= n; i++) {
 		printf("%d\n", parents[i]);
 	}
