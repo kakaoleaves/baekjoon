@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-int counting[10001];
+int counting[10000];
 
 int main(void) {
     ios::sync_with_stdio(false);
