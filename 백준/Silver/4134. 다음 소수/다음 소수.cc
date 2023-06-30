@@ -2,7 +2,7 @@
 #include <cmath>
 using namespace std;
 
-bool isPrime(long long n)
+bool isPrime(unsigned int n)
 {
 	if (n <= 1)
 		return false;
@@ -16,7 +16,7 @@ bool isPrime(long long n)
 	return true;
 }
 
-long long findNextPrime(long long n)
+unsigned int findNextPrime(unsigned int n)
 {
 	while (!isPrime(n))
 		n++;
@@ -33,7 +33,7 @@ int main()
 
 	for (int i = 0; i < n; i++)
 	{
-		long long num;
+		unsigned int num;
 		cin >> num;
 
 		cout << findNextPrime(num) << '\n';
