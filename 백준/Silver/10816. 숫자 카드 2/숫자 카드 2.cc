@@ -1,5 +1,6 @@
 #include <iostream>
-#include <unordered_map>
+#include <algorithm>
+#include <vector>
 using namespace std;
 
 int main()
@@ -8,16 +9,16 @@ int main()
 	cin.tie(NULL);
 
 	int n, m;
-	unordered_map<int, int> cardmap;
+	vector<int> cardmap(500002);
 
 	cin >> n;
 
 	for (int i = 0; i < n; i++)
 	{
-		int num = 0;
-		cin >> num;
-		cardmap[num]++;
+		cin >> cardmap[i];
 	}
+
+	sort(cardmap.begin(), cardmap.begin() + n);
 
 	cin >> m;
 
@@ -25,7 +26,7 @@ int main()
 	{
 		int num = 0;
 		cin >> num;
-		cout << cardmap[num] << " ";
+		cout << upper_bound(cardmap.begin(), cardmap.begin() + n, num) - lower_bound(cardmap.begin(), cardmap.begin() + n, num) << " ";
 	}
 
 	return 0;
