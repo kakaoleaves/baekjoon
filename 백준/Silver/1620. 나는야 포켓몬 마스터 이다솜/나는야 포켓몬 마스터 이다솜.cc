@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -13,7 +13,7 @@ int main()
     int m;
 
     vector<string> pokemon_v;
-    map<string, int> pokemon_um;
+    unordered_map<string, int> pokemon_um;
 
     cin >> n >> m;
 
