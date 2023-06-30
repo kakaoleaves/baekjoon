@@ -1,28 +1,27 @@
 #include <iostream>
 using namespace std;
 
+int gcd(int a, int b)
+{
+	if (b == 0)
+		return a;
+	else
+		return gcd(b, a % b);
+}
+
+long long lcm(int a, int b)
+{
+	return (long long)a * b / gcd(a, b);
+}
+
 int main()
 {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	long long a, b;
+	int a, b;
 	cin >> a >> b;
-
-	if (a % b == 0)
-		cout << a << "\n";
-	else if (b % a == 0)
-		cout << b << "\n";
-	else
-	{
-		int gcb = 1;
-		for (int i = 1; i <= min(a, b); i++)
-		{
-			if (a % i == 0 && b % i == 0)
-				gcb = i;
-		}
-		cout << gcb * (a / gcb) * (b / gcb) << "\n";
-	}
+	cout << lcm(a, b) << '\n';
 
 	return 0;
 }
