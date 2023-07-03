@@ -1,78 +1,79 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
 #include <string>
-#include<deque>
+#include <deque>
 using namespace std;
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    int n, t;
+    cin.tie(NULL);
+
+    int t;
 
     cin >> t;
     while (t--) {
-        string order, str;
-        bool reverse = false, error = false;
+        string p;
+        int n;
+        string arr;
         deque<int> dq;
-        cin >> order;
-        cin >> n;
-        cin >> str;
-        string s = "";
-        for (int i = 0; i < str.length(); i++) {
 
-            if (isdigit(str[i])) {
-                s += str[i];
+        cin >> p >> n >> arr;
 
-            }
-            else {
-                if (!s.empty()) {
-                    dq.push_back(stoi(s));
-                    s = "";
-                }
-            }
+        bool isReverse = false;
+        bool isError = false;
+
+        string temp = "";
+
+        for (char c : arr)
+        {
+            if (isdigit(c))
+            {
+                temp += c;
+			}
+            else if (c == ',' || c == ']')
+            {
+                if (!temp.empty())
+                {
+					dq.push_back(stoi(temp));
+					temp = "";
+				}
+			}
         }
-        for (auto o : order) {
-            if (o == 'R') {
-                if (reverse)
-                    reverse = false;
-                else
-                    reverse = true;
+
+        for (char cmd : p) {
+            if (cmd == 'R') {
+                isReverse = !isReverse;
             }
-            else {
+            else if (cmd == 'D') {
                 if (dq.empty()) {
-                    cout << "error" << '\n';
-                    error = true;
+                    isError = true;
                     break;
                 }
-                if (reverse)
-                    dq.pop_back();
-                else
-                    dq.pop_front();
+                else {
+                    if (isReverse) {
+                        dq.pop_back();
+                    }
+                    else {
+                        dq.pop_front();
+                    }
+                }
             }
         }
-        if (!error) {
-            cout << '[';
-        }
-        if (reverse && !dq.empty()) {
-            for (auto o = dq.rbegin(); o != dq.rend(); o++) {
-                if (o == dq.rend() - 1)
-                    cout << *o;
-                else
-                    cout << *o << ',';
-            }
-        }
-        else if (!reverse && !dq.empty()) {
-            for (auto o = dq.begin(); o != dq.end(); o++) {
-                if (o == dq.end() - 1)
-                    cout << *o;
-                else
-                    cout << *o << ',';
-            }
-        }
-        if (!error)
-            cout << "]\n";
 
+        if (isError) {
+			cout << "error" << '\n';
+		}
+        else {
+			cout << '[';
+
+            while (!dq.empty()) {
+                cout << (isReverse ? dq.back() : dq.front());
+                isReverse ? dq.pop_back() : dq.pop_front();
+                if (!dq.empty()) {
+                    cout << ',';
+                }
+            }
+
+			cout << ']' << '\n';
+		}
     }
 }
