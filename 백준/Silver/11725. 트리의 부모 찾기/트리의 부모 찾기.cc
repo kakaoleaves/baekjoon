@@ -1,46 +1,53 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-
 using namespace std;
 
-const int MAX = 100010;
-vector<int> v[MAX];
-int parents[MAX];
-
-void bfs(int start) {
+void bfs(vector<vector<int>>& tree, vector<int>& parent, int start) {
 	queue<int> q;
 	q.push(start);
-	parents[start] = 1;
-	while (!q.empty()) {
-		int cur = q.front();
+
+    while (!q.empty()) {
+        int node = q.front();
 		q.pop();
-		for (int i = 0; i < v[cur].size(); i++) {
-			int next = v[cur][i];
-			if (parents[next] == 0) {
-				parents[next] = cur;
-				q.push(next);
+
+        const vector<int>& children = tree[node];
+
+        for (const auto& child : children) {
+            if (parent[child] == 0) {
+				parent[child] = node;
+				q.push(child);
 			}
-		}
-	}
+        }
+    }
 }
 
-int main(void) {
-	int n;
-	scanf("%d", &n);
+int main()
+{
+     ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-	for (int i = 0; i < n - 1; i++) {
-		int a;
-		int b;
-		scanf("%d %d", &a, &b);
-		v[a].push_back(b);
-		v[b].push_back(a);
+    int n; // 노드의 개수, 2 <= n <= 100'000
+    cin >> n;
+
+    vector<vector<int>> tree(n + 1);
+
+    for (int i = 1; i < n; i++) {
+        int a, b;
+        cin >> a >> b;
+        tree[a].push_back(b);
+        tree[b].push_back(a);
+    }
+
+
+    vector<int> parent(n + 1, 0);
+
+    bfs(tree, parent, 1);
+
+    for (int i = 2; i <= n; i++) {
+		cout << parent[i] << '\n';
 	}
 
-	bfs(1);
-	for (int i = 2; i <= n; i++) {
-		printf("%d\n", parents[i]);
-	}
-
-	return 0;
+    return 0;
 }
