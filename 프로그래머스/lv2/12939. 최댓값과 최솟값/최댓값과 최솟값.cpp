@@ -1,34 +1,27 @@
 #include <string>
 #include <vector>
-#include <algorithm>
-
+#include <set>
 using namespace std;
 
 string solution(string s) {
     string answer = "";
+    set<int> numberSet;
 
-    vector<int> v;
-    string temp = "";
-
-    for (char c : s)
-    {
-        if (c == ' ')
-        {
-			v.push_back(stoi(temp));
-			temp = "";
-		}
-        else
-        {
-			temp += c;
-		}
+    string tmp = "";
+    for (const char& c : s) {
+        if (c == ' ') {
+            numberSet.insert(stoi(tmp));
+            tmp = "";
+        }
+        else 
+            tmp += c;
     }
-
-    v.push_back(stoi(temp));
-
-    int min = *min_element(v.begin(), v.end());
-    int max = *max_element(v.begin(), v.end());
-
-    answer = to_string(min) + " " + to_string(max);
-
+    
+    if (tmp.size() > 0) numberSet.insert(stoi(tmp));
+    
+    answer += to_string(*numberSet.begin());
+    answer += " ";
+    answer += to_string(*numberSet.rbegin());
+    
     return answer;
 }
