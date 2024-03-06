@@ -2,140 +2,93 @@
 #include <string>
 using namespace std;
 
-int n, m;
-
-struct node {
-	int next, prev;
+struct Node {
+    int next;
+    int prev;
 };
 
-node pool[1000001];
+Node nodes[100'0001];
+int head = 0;
+int tail = 0;
 
-int head = -1, tail = -1;
-
-void insert_back(int data) {
-	if (head == -1) {
-		head = data;
-		tail = head;
-	}
-	else {
-		pool[tail].next = data;
-		pool[data].prev = tail;
-		tail = data;
-	}
-	return;
+void PushBack(int data) {
+    if (head == 0) {
+        head = tail = data;
+        nodes[data].next = nodes[data].prev = data;
+    }
+    else {
+        nodes[tail].next = data;
+        nodes[data].prev = tail;
+        nodes[data].next = head;
+        nodes[head].prev = data;
+        tail = data;
+    }
 }
 
-void insert(int s, int type, int data) {
-	//type 0: 뒤로, type 1: 앞으로
-	switch (type) {
-	case 0:
-		if (s == head) {
-			pool[data].next = head;
-			pool[head].prev = data;
-			head = data;
-			cout << tail << '\n';
-		}
-		else {
-			cout << pool[s].prev << '\n';
-			pool[data].next = s;
-			pool[data].prev = pool[s].prev;
-			pool[pool[s].prev].next = data;
-			pool[s].prev = data;
-		}
-		break;
-	case 1:
-		if (s == tail) {
-			cout << head << '\n';
-			pool[data].prev = tail;
-			pool[tail].next = data;
-			tail = data;
-		}
-		else {
-			cout << pool[s].next << '\n';
-			pool[data].next = pool[s].next;
-			pool[data].prev = s;
-			pool[pool[s].next].prev = data;
-			pool[s].next = data;
-		}
+void Insert(int idx, bool isNext, int data) {
+    if (isNext) { // idx와 다음 노드 사이에 삽입
+        cout << nodes[idx].next << '\n'; // 다음 역의 고유 번호 출력
+        nodes[data].prev = idx;
+		nodes[data].next = nodes[idx].next;
+		nodes[nodes[idx].next].prev = data;
+		nodes[idx].next = data;
+        if (tail == idx) tail = data; // idx가 마지막 노드일 경우 tail 갱신
 	}
-	return;
+	else { // idx와 이전 노드 사이에 삽입
+        cout << nodes[idx].prev << '\n'; // 이전 역의 고유 번호 출력
+		nodes[data].next = idx;
+		nodes[data].prev = nodes[idx].prev;
+		nodes[nodes[idx].prev].next = data;
+		nodes[idx].prev = data;
+        if (head == idx) head = data; // idx가 첫 노드일 경우 head 갱신
+    }
 }
 
-void Delete(int s, int type) {
-	//type 0 : 뒤로 1: 앞으로
-	switch (type) {
-	case 0:
-		if (head == s) {
-			cout << tail << '\n';
-			tail = pool[tail].prev;
-			pool[tail].next = -1;
-		}
-		else {
-			cout << pool[s].prev << '\n';
-			if (pool[s].prev == head) {
-				head = pool[head].next;
-				pool[head].prev = -1;
-			}
-			else {
-				pool[s].prev = pool[pool[s].prev].prev;
-				pool[pool[s].prev].next = s;
-			}
-		}
-		break;
-	case 1:
-		if (tail == s) {
-			cout << head << '\n';
-			head = pool[head].next;
-			pool[head].prev = -1;
-		}
-		else {
-			cout << pool[s].next << '\n';
-			if (pool[s].next == tail) {
-				tail = pool[tail].prev;
-				pool[tail].next = -1;
-			}
-			else {
-				pool[s].next = pool[pool[s].next].next;
-				pool[pool[s].next].prev = s;
-			}
-		}
+void Delete(int idx, bool isNext) {
+    if (isNext) {
+        int target = nodes[idx].next;
+        cout << target << '\n'; // 다음 역의 고유 번호 출력
+
+        nodes[nodes[target].prev].next = nodes[target].next;
+        nodes[nodes[target].next].prev = nodes[target].prev;
+        if (tail == target) tail = nodes[target].prev; // target이 마지막 노드일 경우 tail 갱신
+	}
+    else {
+        int target = nodes[idx].prev;
+		cout << target << '\n'; // 이전 역의 고유 번호 출력
+
+		nodes[nodes[target].prev].next = nodes[target].next;
+		nodes[nodes[target].next].prev = nodes[target].prev;
+		if (head == target) head = nodes[target].next; // target이 첫 노드일 경우 head 갱신
 	}
 }
 
 int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
-	cin >> n >> m;
-	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-		insert_back(x);
-	}
-	for (int i = 0; i < m; i++) {
-		string cmd;
-		cin >> cmd;
-		if (cmd == "BN") {
-			int x, y;
-			cin >> x >> y;
-			insert(x, 1, y);
-		}
-		else if (cmd == "BP") {
-			int x, y;
-			cin >> x >> y;
-			insert(x, 0, y);
-		}
-		else if (cmd == "CN") {
-			int x;
-			cin >> x;
-			Delete(x, 1);
-		}
-		else {
-			int x;
-			cin >> x;
-			Delete(x, 0);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-		}
+    int n, m;
+    cin >> n >> m;
+
+    int tmp;
+    for (int i = 1; i <= n; i++) {
+        cin >> tmp;
+        PushBack(tmp);
 	}
-	return 0;
+
+    while (m--) {
+        char type1, type2;
+        int i, j;
+        cin >> type1 >> type2 >> i;
+
+        if (type1 == 'B') {
+            cin >> j;
+            Insert(i, type2 == 'N', j);
+        }
+        else {
+			Delete(i, type2 == 'N');
+		}
+    }
+
+    return 0;
 }
