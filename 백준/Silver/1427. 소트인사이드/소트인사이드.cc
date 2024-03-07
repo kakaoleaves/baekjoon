@@ -1,22 +1,29 @@
 #include <iostream>
-#include <cassert>
-#include <string>
+#include <vector>
 #include <algorithm>
 using namespace std;
 
-int main(void) {
+int n;
+
+int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    int n;
     cin >> n;
-    assert(n >= 1 && n <= 1000000000);
 
-    string s = to_string(n);
-    sort(s.begin(), s.end(), greater<char>());
+    vector<int> v(10); // 0 ~ 9
 
-    cout << s << endl;
+    while (n > 0) {
+        v[n % 10]++;
+        n /= 10;
+	}
 
+    for (int i = 9; i >= 0; i--) {
+        for (int j = 0; j < v[i]; j++) {
+			cout << i;
+		}
+	}
+  
     return 0;
 }
