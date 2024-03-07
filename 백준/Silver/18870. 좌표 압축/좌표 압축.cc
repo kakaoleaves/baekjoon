@@ -1,30 +1,28 @@
 #include <iostream>
-#include <cassert>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
-int main(void) {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+int n;
 
-    int n;
-    cin >> n;    
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    cin >> n;
+
     vector<int> v(n);
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
         cin >> v[i];
-	}
 
-    vector<int> uv(v);
-    sort(uv.begin(), uv.end());
+    vector<int> v2 = v;
+    sort(v2.begin(), v2.end());
+    v2.erase(unique(v2.begin(), v2.end()), v2.end());
 
-    uv.erase(unique(uv.begin(), uv.end()), uv.end());
-
-    for (int i = 0; i < n; i++) {
-		cout << lower_bound(uv.begin(), uv.end(), v[i]) - uv.begin() << ' ';
-    }
+    for (int i = 0; i < n; i++)
+		cout << lower_bound(v2.begin(), v2.end(), v[i]) - v2.begin() << ' ';
 
     return 0;
 }
