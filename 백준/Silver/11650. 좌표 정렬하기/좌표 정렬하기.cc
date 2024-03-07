@@ -1,43 +1,46 @@
 #include <iostream>
-#include <cassert>
-#include <string>
+#include <vector>
 #include <algorithm>
 using namespace std;
 
 struct coordinate {
-	int x;
-	int y;
+    int x;
+    int y;
+    void Print() {
+        cout << x << " " << y << "\n";
+    }
 };
 
+vector<coordinate> v(100000);
+int n;
 
-int main(void) {
+bool Compare(coordinate a, coordinate b) {
+    if (a.x == b.x) {
+		return a.y < b.y;
+	}
+    else {
+		return a.x < b.x;
+	}
+}
+
+int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    int n;
     cin >> n;
-    assert(n >= 1 && n <= 100000);
 
-    coordinate* arr = new coordinate[n];
     for (int i = 0; i < n; i++) {
-		cin >> arr[i].x >> arr[i].y;
-		assert(arr[i].x >= -100000 && arr[i].x <= 100000);
-        assert(arr[i].y >= -100000 && arr[i].y <= 100000);
+        coordinate c;
+		cin >> c.x >> c.y;
+        v[i] = c;
 	}
 
-    sort(arr, arr + n, [](coordinate a, coordinate b) {
-        if (a.x == b.x) {
-			return a.y < b.y;
-		}
-        else {
-			return a.x < b.x;
-		}
-	});
+    sort(v.begin(), v.begin() + n, Compare);
 
     for (int i = 0; i < n; i++) {
-        cout << arr[i].x << " " << arr[i].y << "\n";
+        v[i].Print();
     }
-
+  
     return 0;
 }
