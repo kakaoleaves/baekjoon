@@ -1,33 +1,40 @@
 #include <iostream>
-#include <cassert>
-#include <algorithm>
-#include <map>
+#include <vector>
 #include <string>
 #include <algorithm>
-
 using namespace std;
 
-int main(void) {
+struct Member {
+    short age;
+    string name;
+    void Print() const { cout << age << ' ' << name << '\n'; }
+};
+
+int n;
+vector<Member> members;
+
+int main() {
     ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
-    multimap<int, string> m;
+    members.reserve(100000);
 
-    int n;
     cin >> n;
+
     for (int i = 0; i < n; i++) {
-        int age;
-        string name;
-        cin >> age >> name;
-        assert(age >= 1 && age <= 200);
-        assert(name.length() >= 1 && name.length() <= 100);
-        m.insert(make_pair(age, name));
+        Member member;
+        cin >> member.age >> member.name;
+        members.push_back(member);
     }
 
-    for (auto it = m.begin(); it != m.end(); it++) {
-		cout << it->first << " " << it->second << "\n";
-	}
+    stable_sort(members.begin(), members.end(), [](const Member& a, const Member& b) {
+        return a.age < b.age;
+        });
+
+    for (const auto& member : members) {
+        member.Print();
+    }
 
     return 0;
 }
