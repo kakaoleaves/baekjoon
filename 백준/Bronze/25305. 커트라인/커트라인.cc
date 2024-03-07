@@ -1,31 +1,25 @@
 #include <iostream>
-#include <cassert>
-#include <set>
+#include <vector>
 #include <algorithm>
 using namespace std;
 
-int main(void) {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+int n;
+int k;
+vector<int> v(1000);
 
-    int n, k;
-    multiset<int, greater<int>> ms;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
 
     cin >> n >> k;
-    assert(n >= 1 && n <= 1000);
-    assert(k >= 1 && k <= n);
 
-    for (int i = 0; i < n; i++) {
-		int score;
-		cin >> score;
-        assert(score >= 0 && score <= 10000);
-		ms.insert(score);
-	}
+    for (int i = 0; i < n; i++)
+        cin >> v[i];
 
-    auto it = ms.begin();
-    advance(it, k - 1);
-    cout << *it << endl;
+    sort(v.begin(), v.end(), greater<int>());
+
+    cout << v[k - 1] << '\n';
 
     return 0;
 }
