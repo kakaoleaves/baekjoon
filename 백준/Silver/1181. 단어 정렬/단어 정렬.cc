@@ -1,41 +1,41 @@
 #include <iostream>
-#include <cassert>
-#include <algorithm>
-#include <set>
+#include <vector>
 #include <string>
+#include <algorithm>
 using namespace std;
 
-struct compare {
-    bool operator()(const string& a, const string& b) const {
-        if (a.length() == b.length()) {
+int n; // 1 <= n <= 20000
+vector<string> words;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    words.reserve(20000);
+
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+		string word;
+		cin >> word;
+		words.push_back(word);
+	}
+
+    sort(words.begin(), words.end(), [](const string& a, const string& b) {
+        if (a.size() == b.size()) {
 			return a < b;
 		}
         else {
-			return a.length() < b.length();
+			return a.size() < b.size();
 		}
-	}
-};
+    });
 
-int main(void) {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-
-    int n;
-    cin >> n;
-    assert(n >= 1 && n <= 20000);
-
-    set<string, compare> s;
-    for (int i = 0; i < n; i++) {
-		string str;
-		cin >> str;
-		assert(str.length() >= 1 && str.length() <= 50);
-		s.insert(str);
-	}
-
-    for (auto it = s.begin(); it != s.end(); it++) {
-		cout << *it << '\n';
-	}
+    words.erase(unique(words.begin(), words.end()), words.end());
+  
+    for (const auto& word : words) {
+        cout << word << '\n';
+    }
 
     return 0;
 }
