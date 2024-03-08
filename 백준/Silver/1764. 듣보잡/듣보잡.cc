@@ -1,42 +1,42 @@
 #include <iostream>
-#include <string>
-#include <unordered_set>
-#include <set>
+#include <vector>
+#include <algorithm>
 using namespace std;
+
+int n;
+int m;
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(nullptr);
 
-	int n, m;
 	cin >> n >> m;
-	int count = 0;
-	string name;
 
-	unordered_set<string> s;
-	set<string, less<>> ans;
+	vector<string> v(n);
+	vector<string> intersect;
+
+	intersect.reserve(min(n, m));
+
 	for (int i = 0; i < n; i++)
-	{
-		cin >> name;
-		s.insert(name);
-	}
+		cin >> v[i];
+
+	sort(v.begin(), v.end());
 
 	for (int i = 0; i < m; i++)
 	{
+		string name;
 		cin >> name;
-		if (s.find(name) != s.end())
-		{
-			ans.insert(name);
-			count++;
+		if (binary_search(v.begin(), v.end(), name)) {
+			intersect.push_back(name);
 		}
 	}
 
-	cout << count << '\n';
-	for (auto it = ans.begin(); it != ans.end(); it++)
-	{
-		cout << *it << '\n';
-	}
+	sort(intersect.begin(), intersect.end());
+
+	cout << intersect.size() << '\n';
+	for (const auto& name : intersect)
+		cout << name << '\n';
 
 	return 0;
 }
