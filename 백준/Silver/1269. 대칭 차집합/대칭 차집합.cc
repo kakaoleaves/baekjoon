@@ -1,36 +1,33 @@
 #include <iostream>
-#include <set>
+#include <vector>
+#include <algorithm>
 using namespace std;
+
+int n;
+int m;
+vector<int> a(200000);
+vector<int> b(200000);
+vector<int> dif(400000);
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	int n;
-	int m;
-	int element;
-
-	set<int> a;
-	int count = 0;
+	cin.tie(nullptr);
 
 	cin >> n >> m;
 
-
 	for (int i = 0; i < n; i++)
-	{
-		cin >> element;
-		a.insert(element);
-	}
+		cin >> a[i];
 
 	for (int i = 0; i < m; i++)
-	{
-		cin >> element;
-		if (a.find(element) != a.end())
-			count++;
-	}
+		cin >> b[i];
 
-	cout << n + m - 2 * count << '\n';
+	sort(a.begin(), a.begin() + n);
+	sort(b.begin(), b.begin() + m);
+
+	auto it = set_symmetric_difference(a.begin(), a.begin() + n, b.begin(), b.begin() + m, dif.begin());
+
+	cout << distance(dif.begin(), it) << '\n';
 
 	return 0;
 }
