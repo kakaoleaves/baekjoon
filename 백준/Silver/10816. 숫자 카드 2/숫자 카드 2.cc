@@ -1,32 +1,32 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 using namespace std;
+
+int n; // 1 <= n <= 500'000
+int m;
+vector<int> v1(500000);
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	int n, m;
-	vector<int> cardmap(500002);
+	cin.tie(nullptr);
 
 	cin >> n;
 
 	for (int i = 0; i < n; i++)
-	{
-		cin >> cardmap[i];
-	}
-
-	sort(cardmap.begin(), cardmap.begin() + n);
+		cin >> v1[i];
 
 	cin >> m;
 
+	sort(v1.begin(), v1.begin() + n);
+
 	for (int i = 0; i < m; i++)
 	{
-		int num = 0;
+		int num;
 		cin >> num;
-		cout << upper_bound(cardmap.begin(), cardmap.begin() + n, num) - lower_bound(cardmap.begin(), cardmap.begin() + n, num) << " ";
+		auto it = equal_range(v1.begin(), v1.begin() + n, num);
+		cout << it.second - it.first << " ";
 	}
 
 	return 0;
