@@ -1,26 +1,27 @@
 #include <iostream>
+#include <unordered_set>
 #include <string>
-#include <set>
 using namespace std;
+
+unordered_set<string> s;
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(nullptr);
 
 	string str;
-	set<string> substrs;
 	cin >> str;
 
-	for (int i = 1; i <= str.length(); i++)
-	{
-		for (int j = 0; j <= str.length() - i; j++)
-		{
-			substrs.insert(str.substr(j, i));
+	int sz = str.size();
+
+	for (int i = 0; i < sz; i++) {
+		for (int j = sz - i; j > 0; j--) {
+			s.insert(str.substr(i, j));
 		}
 	}
 
-	cout << substrs.size() << "\n";
+	cout << s.size() << '\n';
 
 	return 0;
 }
