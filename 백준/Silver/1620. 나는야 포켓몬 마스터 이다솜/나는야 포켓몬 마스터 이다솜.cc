@@ -1,44 +1,42 @@
 #include <iostream>
-#include <string>
-#include <unordered_map>
 #include <vector>
+#include <string>
+#include <algorithm>
+#include <unordered_map>
 using namespace std;
+
+int n;
+int m;
+vector<string> pokemons(100001);
+unordered_map<string, int> nameToIndex;
 
 int main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n;
-    int m;
+	cin >> n >> m;
 
-    vector<string> pokemon_v;
-    unordered_map<string, int> pokemon_um;
-
-    cin >> n >> m;
-
-    for (int i = 0; i < n; i++)
-    {
-        string pokemon;
-		cin >> pokemon;
-        pokemon_v.push_back(pokemon);
-        pokemon_um.insert(make_pair(pokemon, i + 1));
+	for (int i = 1; i <= n; i++)
+	{
+		string name;
+		cin >> name;
+		pokemons[i] = name;
+		nameToIndex[pokemons[i]] = i;
 	}
 
-    for (int i = 0; i < m; i++)
-    {
-        string question;
-        cin >> question;
-        char c = question[0];
-        if (isdigit(c))
-        {
-			cout << pokemon_v[stoi(question) - 1] << "\n";
+	for (int i = 0; i < m; i++)
+	{
+		string query;
+		cin >> query;
+		if (isdigit(query[0])) {
+			int idx = stoi(query);
+			cout << pokemons[idx] << "\n";
 		}
-		else 
-        {
-            cout << pokemon_um[question] << "\n";
-        }
-    }
+		else {
+			cout << nameToIndex[query] << "\n";
+		}
+	}
 
-    return 0;
+	return 0;
 }
