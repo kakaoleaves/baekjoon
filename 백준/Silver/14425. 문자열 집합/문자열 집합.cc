@@ -1,37 +1,37 @@
 #include <iostream>
 #include <string>
-#include <set>
+#include <vector>
+#include <algorithm>
 using namespace std;
+
+int n;
+int m;
+vector<string> v(10000);
+int cnt = 0;
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-
-	int n;
-	int m;
-	int count = 0;
-	set<string> s;
+	cin.tie(nullptr);
+	cout.tie(nullptr);
 
 	cin >> n >> m;
 
 	for (int i = 0; i < n; i++)
-	{
-		string str;
-		cin >> str;
-		s.insert(str);
-	}
+		cin >> v[i];
+
+	sort(v.begin(), v.begin() + n);
 
 	for (int i = 0; i < m; i++)
 	{
-		string str;
-		cin >> str;
-		if (s.find(str) != s.end())
-			count++;
+		string s;
+		cin >> s;
+
+		if (binary_search(v.begin(), v.begin() + n, s))
+			cnt++;
 	}
 
-	cout << count << "\n";
+	cout << cnt << '\n';
 
 	return 0;
 }
