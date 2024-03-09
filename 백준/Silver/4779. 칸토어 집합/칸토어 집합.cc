@@ -1,36 +1,34 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <cmath>
 using namespace std;
 
-void cantoring(int idx, int n)
-{
-	if ((idx / n) % 3 == 1)
-		cout << " ";
-	else
-	{
-		if (n / 3 == 0)
-			cout << "-";
-		else
-			cantoring(idx, n / 3);
+int n; // 0 <= n <= 12
+
+void CantorSet(string& s, int start, int end) {
+	if (end - start < 3) {
+		return; // base case
 	}
+	int third = (end - start) / 3;
+
+	for (int i = start + third; i < start + 2 * third; i++) {
+		s[i] = ' ';
+	}
+
+	CantorSet(s, start, start + third);
+	CantorSet(s, start + 2 * third, end);
 }
 
-
-int main(int argc, char* argv[])
+int main()
 {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(nullptr);
 
-	int n;
-	while (cin >> n)
-	{
-		int k = (int)pow(3, n);
-		for (int i = 0; i < k; i++)
-		{
-			cantoring(i, k);
-		}
-		cout << "\n";
+	while (cin >> n) {
+		int length = static_cast<int>(pow(3, n));
+		string s(length, '-');
+		CantorSet(s, 0, length);
+		cout << s << '\n';
 	}
 
 	return 0;
