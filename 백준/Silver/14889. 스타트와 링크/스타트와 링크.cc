@@ -1,60 +1,56 @@
-// Baekjoon #14889
 #include <iostream>
 #include <vector>
-#define fastio cin.tie(0)->sync_with_stdio(0)
-
+#include <limits>
+#include <algorithm>
+#include <cmath>
 using namespace std;
+
+int n;
+vector<vector<int>> v;
+vector<bool> checked;
+
+int mn = numeric_limits<int>::max();
+
+void backtracking(int idx, int num) {
+	if (num == n / 2) {
+		int start = 0, link = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (checked[i] && checked[j]) start += v[i][j] + v[j][i];
+				else if (!checked[i] && !checked[j]) link += v[i][j] + v[j][i];
+			}
+		}
+		mn = min(mn, abs(start - link));
+		return;
+	}
+
+	for (int i = idx; i < n; i++) {
+		if (!checked[i]) {
+			checked[i] = true;
+			backtracking(i + 1, num + 1);
+			checked[i] = false;		
+		}
+	}
+}
 
 int main()
 {
-    fastio;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n;
-    cin >> n;
+	cin >> n;
+	v.resize(n, vector<int>(n));
+	checked.resize(n, false);
 
-    vector<vector<int>> graph(n, vector<int>(n));
-
-    for (auto &i : graph)
-		for (auto &j : i)
-			cin >> j;
-
-    int min = 100 * 10;
-
-	for (int i = 0; i < (1 << n); i++)
-	{
-		vector<int> start;
-		vector<int> link;
-
+	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++)
-		{
-			if (i & (1 << j))
-				start.push_back(j);
-			else
-				link.push_back(j);
-		}
+			cin >> v[i][j];
 
-		if (start.size() != n / 2)
-			continue;
+	checked[0] = true;
 
-		int start_sum = 0;
-		int link_sum = 0;
-		for (int j = 0; j < n / 2; j++)
-		{
-			for (int k = 0; k < n / 2; k++)
-			{
-				if (j == k)
-					continue;
-				start_sum += graph[start[j]][start[k]];
-				link_sum += graph[link[j]][link[k]];
-			}
-		}
+	backtracking(1, 1);
 
-		int diff = abs(start_sum - link_sum);
-		if (diff < min)
-			min = diff;
-	}
+	cout << mn << '\n';
 
-	cout << min << '\n';
-    
 	return 0;
 }
