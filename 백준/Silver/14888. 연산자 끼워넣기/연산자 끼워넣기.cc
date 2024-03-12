@@ -1,106 +1,53 @@
 #include <iostream>
 #include <vector>
-#define fastio cin.tie(0)->sync_with_stdio(0)
-
+#include <limits>
+#include <algorithm>
 using namespace std;
 
-#define MAX 1'000'000'000
-#define MIN -1'000'000'000
-#define ADD 0
-#define SUB 1
-#define MUL 2
-#define DIV 3
+int n; // 2 <= n <= 11
+vector<int> v(11);
+vector<int> op(4); // +, -, *, /
 
-int maximum = MIN;
-int minimum = MAX;
+int mx = numeric_limits<int>::min();
+int mn = numeric_limits<int>::max();
 
-void backtracking(vector<int>& seq, int add, int sub, int mul, int div, vector<int>& op)
+void backtrack(int idx, int sum)
 {
-	if (add == 0 && sub == 0 && mul == 0 && div == 0)
-	{
-		// calculate
-		int result = seq[0];
-		for (int i = 0; i < seq.size() - 1; i++)
-		{
-			switch (op[i])
-			{
-			case ADD:
-				result += seq[i + 1];
-				break;
-			case SUB:
-				result -= seq[i + 1];
-				break;
-			case MUL:
-				result *= seq[i + 1];
-				break;
-			case DIV:
-				result /= seq[i + 1];
-				break;
-			default:
-				break;
-			}
-		}
-
-		if (result > maximum)
-			maximum = result;
-		if (result < minimum)
-			minimum = result;
-
+	if (idx == n) {
+		mx = std::max(mx, sum);
+		mn = std::min(mn, sum);
 	}
-	else
-	{
-		if (add > 0)
-		{
-			op.push_back(ADD);
-			backtracking(seq, add - 1, sub, mul, div, op);
-			op.pop_back();
-		}
-		if (sub > 0)
-		{
-			op.push_back(SUB);
-			backtracking(seq, add, sub - 1, mul, div, op);
-			op.pop_back();
-		}
-		if (mul > 0)
-		{
-			op.push_back(MUL);
-			backtracking(seq, add, sub, mul - 1, div, op);
-			op.pop_back();
-		}
-		if (div > 0)
-		{
-			op.push_back(DIV);
-			backtracking(seq, add, sub, mul, div - 1, op);
-			op.pop_back();
+
+	for (int i = 0; i < 4; i++) {
+		if (op[i] > 0) {
+			op[i]--;
+			if (i == 0) backtrack(idx + 1, sum + v[idx]);
+			else if (i == 1) backtrack(idx + 1, sum - v[idx]);
+			else if (i == 2) backtrack(idx + 1, sum * v[idx]);
+			else if (i == 3) backtrack(idx + 1, sum / v[idx]);
+			op[i]++;
 		}
 	}
 }
 
 int main()
 {
-	fastio;
-
-	int n;
-	int add;
-	int sub;
-	int mul;
-	int div;
-	vector<int> seq;
-	vector<int> op;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
 	cin >> n;
-	seq.resize(n);
 
-	for (auto& i : seq)
-		cin >> i;
+	v.resize(n);
 
-	cin >> add >> sub >> mul >> div;
+	for (int i = 0; i < n; i++)
+		cin >> v[i];
 
-	backtracking(seq, add, sub, mul, div, op);
+	for (int i = 0; i < 4; i++)
+		cin >> op[i];
 
-	cout << maximum << "\n";
-	cout << minimum << "\n";
+	backtrack(1, v[0]);
 
+	cout << mx << '\n' << mn << '\n';
 
 	return 0;
 }
