@@ -1,48 +1,49 @@
 #include <iostream>
-#include <map>
-#define fastio cin.tie(0)->sync_with_stdio(0)
-
+#include <vector>
 using namespace std;
 
-struct triple {
-	int a;
-	int b;
-	int c;
-
-	bool operator<(const triple& other) const
-	{
-		if (a != other.a) return a < other.a;
-		if (b != other.b) return b < other.b;
-		return c < other.c;
-	}
-
-};
-
-int w(int a, int b, int c, map<triple, int>& table)
-{
-	if (a <= 0 || b <= 0 || c <= 0) return 1;
-	if (a > 20 || b > 20 || c > 20) return w(20, 20, 20, table);
-
-	triple t = { a, b, c };
-	if (table.count(t)) return table[t];
-
-	if (a < b && b < c) return table[t] = w(a, b, c - 1, table) + w(a, b - 1, c - 1, table) - w(a, b - 1, c, table);
-	return table[t] = w(a - 1, b, c, table) + w(a - 1, b - 1, c, table) + w(a - 1, b, c - 1, table) - w(a - 1, b - 1, c - 1, table);
-}
+vector<vector<vector<int>>> dp(21, vector<vector<int>>(21, vector<int>(21)));
 
 int main()
 {
-	fastio;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-	int a;
-	int b;
-	int c;
-	map<triple, int> table;
+	for (int i = 0; i < 21; i++) {
+		for (int j = 0; j < 21; j++) {
+			for (int k = 0; k < 21; k++) {
+				if (i <= 0 || j <= 0 || k <= 0) {
+					dp[i][j][k] = 1;
+				}
+				else if (i < j && j < k) {
+					dp[i][j][k] = dp[i][j][k - 1] + dp[i][j - 1][k - 1] - dp[i][j - 1][k];
+				}
+				else {
+					dp[i][j][k] = dp[i - 1][j][k] + dp[i - 1][j - 1][k] + dp[i - 1][j][k - 1] - dp[i - 1][j - 1][k - 1];
+				}
+			}
+		}
+	}
 
-	while (true) {
+	while (true)
+	{
+		int a;
+		int b;
+		int c;
 		cin >> a >> b >> c;
-		if (a == -1 && b == -1 && c == -1) break;
-		cout << "w(" << a << ", " << b << ", " << c << ") = " << w(a, b, c, table) << '\n';
+		if (a == -1 && b == -1 && c == -1) {
+			break;
+		}
+		cout << "w(" << a << ", " << b << ", " << c << ") = ";
+		if (a <= 0 || b <= 0 || c <= 0) {
+			cout << 1 << "\n";
+		}
+		else if (a > 20 || b > 20 || c > 20) {
+			cout << dp[20][20][20] << "\n";
+		}
+		else {
+			cout << dp[a][b][c] << "\n";
+		}
 	}
 
 	return 0;
