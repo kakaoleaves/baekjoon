@@ -1,34 +1,24 @@
 #include <iostream>
-#include <map>
 #include <vector>
-#define fastio cin.tie(0)->sync_with_stdio(0)
-
 using namespace std;
 
-const int MOD = 15746;
-
-int zeroOneTile(int n)
-{
-	vector<int> memo(n + 1, 0);
-
-	memo[0] = 0;
-	memo[1] = 1;
-	memo[2] = 2;
-
-	for (int i = 3; i <= n; i++)
-		memo[i] = (memo[i - 1] + memo[i - 2]) % MOD;
-
-	return memo[n];
-}
+vector<int> dp(1'000'001);
+int n;
 
 int main()
 {
-	fastio;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-	int n;
 	cin >> n;
 
-	cout << zeroOneTile(n) << '\n';
+	dp[1] = 1;
+	dp[2] = 2;
+	for (int i = 3; i <= n; i++) {
+		dp[i] = (dp[i - 1] + dp[i - 2]) % 15746;
+	}
+
+	cout << dp[n] << '\n';
 
 	return 0;
 }
