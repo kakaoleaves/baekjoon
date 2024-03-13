@@ -1,37 +1,31 @@
 #include <iostream>
 #include <vector>
-#define fastio cin.tie(0)->sync_with_stdio(0)
-
 using namespace std;
 
-const int MAX = 100;
-
-long long PadovanSequence(int n, vector<long long>& memo)
-{
-	if (n <= 3) return memo[n];
-
-	for (int i = 4; i <= n; i++)
-	{
-		memo[i] = memo[i - 2] + memo[i - 3];
-	}
-
-	return memo[n];
-}
+vector<long long> dp(101);
+int t;
 
 int main()
 {
-	fastio;
-
-	int t;
-	int n;
-	vector<long long> memo(MAX + 1, 0);
-	memo[1] = memo[2] = memo[3] = 1;
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
 	cin >> t;
-	while (t--)
-	{
-		cin >> n;
-		cout << PadovanSequence(n, memo) << '\n';
+
+	dp[1] = 1;
+	dp[2] = 1;
+	dp[3] = 1;
+	dp[4] = 2;
+	dp[5] = 2;
+
+	for (int i = 6; i <= 100; i++) {
+		dp[i] = dp[i - 1] + dp[i - 5];
+	}
+
+	while (t--) {
+		int num;
+		cin >> num;
+		cout << dp[num] << '\n';
 	}
 
 	return 0;
