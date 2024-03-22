@@ -8,19 +8,14 @@ vector<vector<int>> paper;
 vector<vector<bool>> visited;
 int ans;
 
-// 네 가지 테트로미노는 DFS 방식으로 탐색이 가능하다.
-void backtracking(int x, int y, vector<int>& v) {
-	if (v.size() == 4) {
-		int sum = 0;
-		for (int i = 0; i < 4; i++) {
-			sum += v[i];
-		}
+vector<int> dx = { 0, 0, 1, -1 };
+vector<int> dy = { 1, -1, 0, 0 };
+
+void Tetromino(int x, int y, int sum, int cnt) {
+	if (cnt == 4) {
 		ans = max(ans, sum);
 		return;
 	}
-
-	int dx[] = { -1, 1, 0, 0 };
-	int dy[] = { 0, 0, -1, 1 };
 
 	for (int i = 0; i < 4; i++) {
 		int nx = x + dx[i];
@@ -30,26 +25,19 @@ void backtracking(int x, int y, vector<int>& v) {
 		if (visited[nx][ny]) continue;
 
 		visited[nx][ny] = true;
-		v.push_back(paper[nx][ny]);
-		backtracking(nx, ny, v);
+		Tetromino(nx, ny, sum + paper[nx][ny], cnt + 1);
 		visited[nx][ny] = false;
-		v.pop_back();
-	}
+	}	
 }
 
-// ㅗ 모양은 DFS로 탐색이 불가능하다.
-void finding(int x, int y) {
-	// x, y를 중심으로 ㅗ 모양을 만들 수 있는 네 가지 방식 탐색
-	int dx[] = { -1, 1, 0, 0 };
-	int dy[] = { 0, 0, -1, 1 };
-
+void T_Teromino(int x, int y) {
+	// [x, y]가 중심일 때 ㅗ 모양을 만들 수 있는 경우는 4가지
 	for (int i = 0; i < 4; i++) {
 		int sum = paper[x][y];
 		bool flag = true;
-		for (int j = 0; j < 4; j++) {
-			if (i == j) continue;
-			int nx = x + dx[j];
-			int ny = y + dy[j];
+		for (int j = 0; j < 3; j++) {
+			int nx = x + dx[(i + j) % 4];
+			int ny = y + dy[(i + j) % 4];
 
 			if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
 				flag = false;
@@ -67,25 +55,20 @@ int main()
 	cin.tie(nullptr);
 
 	cin >> n >> m;
-	paper.resize(n, vector<int>(m));
+	paper.resize(n, vector<int>(m, 0));
 	visited.resize(n, vector<bool>(m, false));
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
 			cin >> paper[i][j];
-		}
-	}
 
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++)
 		for (int j = 0; j < m; j++) {
-			vector<int> v;
 			visited[i][j] = true;
-			v.push_back(paper[i][j]);
-			backtracking(i, j, v);
-			finding(i, j);
+			Tetromino(i, j, paper[i][j], 1);
+			T_Teromino(i, j);
 			visited[i][j] = false;
 		}
-	}
 
 	cout << ans << '\n';
 
