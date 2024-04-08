@@ -8,7 +8,7 @@ int n; // 보드의 크기; 1<= n <= 20
 vector<vector<int>> board(20, vector<int>(20, 0));
 int ans = 0;
 
-enum {UP, DOWN, LEFT, RIGHT};
+enum { UP, DOWN, LEFT, RIGHT };
 
 void Print()
 {
@@ -22,135 +22,59 @@ void Print()
 
 void Move(int dir)
 {
-    switch (dir)
-    {
-    case UP:
-        for (int i = 0; i < n; i++)
-        {
-            vector<int> tmp;
-            for (int j = 0; j < n; j++)
-                tmp.push_back(board[j][i]);
+	for (int i = 0; i < n; i++)
+	{
+		vector<int> tmp;
 
-            // 0이 아닌 수들을 모두 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x != 0; });
+		bool isRow = (dir == LEFT || dir == RIGHT); // 좌우 : 행, 상하 : 열
+		// 각 열이나 행을 복사해서 저장함.
+		for (int j = 0; j < n; j++)
+		{
+			tmp.push_back(isRow ? board[i][j] : board[j][i]);
+		}
 
-            // 같은 수를 만나면 합친다.
-            for (int j = 0; j < n - 1; j++)
-            {
-                if (tmp[j] == tmp[j + 1] && tmp[j] != 0)
-                {
-					tmp[j] *= 2;
-					tmp[j + 1] = 0;
-                    j++; // 합쳤으니 다음 수는 건너뛴다.
-				}
-			}
+		// 각 방향에 맞게 0이 없도록 원하는 방향으로 이동시킴
+		bool isZeroUp = (dir == RIGHT || dir == DOWN);
+		stable_partition(tmp.begin(), tmp.end(), [isZeroUp](int x) { return (isZeroUp ? x == 0 : x != 0); });
 
-            // 0이 아닌 수들을 모두 앞으로 당긴다.
-			stable_partition(tmp.begin(), tmp.end(), [](int x) {return x != 0; });
-
-            // 보드에 다시 넣는다.
-			for (int j = 0; j < n; j++)
-				board[j][i] = tmp[j];
-        }
-        //cout << "UP" << endl;
-        //Print();
-        break;
-    case DOWN:
-        for (int i = 0; i < n; i++)
-        {
-            vector<int> tmp;
-            for (int j = 0; j < n; j++)
-                tmp.push_back(board[j][i]);
-
-            // 0인 수를 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x == 0; });
-
-            // 같은 수를 만나면 합친다.
-            for (int j = n - 1; j > 0; j--)
-            {
-                if (tmp[j] == tmp[j - 1] && tmp[j] != 0)
-                {
+		// 0이 아닌 인접한 값에 대한 합침 작업 수행
+		if (isZeroUp)
+		{
+			for (int j = n - 1; j > 0; j--)
+			{
+				if (tmp[j] == tmp[j - 1] && tmp[j] != 0)
+				{
 					tmp[j] *= 2;
 					tmp[j - 1] = 0;
-                    j--; // 합쳤으니 다음 수는 건너뛴다.
+					j--;
 				}
-            }
-
-            // 0인 수를 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x == 0; });
-
-            // 보드에 다시 넣는다.
-            for (int j = 0; j < n; j++)
-                board[j][i] = tmp[j];
-        }
-        //cout << "DOWN" << endl;
-        //Print();
-        break;
-    case RIGHT:
-        for (int i = 0; i < n; i++)
-        {
-            vector<int> tmp;
-            for (int j = 0; j < n; j++)
-				tmp.push_back(board[i][j]);
-
-            // 0인 수를 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x == 0; });
-
-            // 같은 수를 만나면 합친다.
-            for (int j = n - 1; j > 0; j--)
-            {
-                if (tmp[j] == tmp[j - 1] && tmp[j] != 0)
-                {
-					tmp[j] *= 2;
-					tmp[j - 1] = 0;
-                    j--; // 합쳤으니 다음 수는 건너뛴다.
-				}
+				else if (tmp[j] == 0) break;
 			}
-
-            // 0인 수를 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x == 0; });
-
-            // 보드에 다시 넣는다.
-            for (int j = 0; j < n; j++)
-				board[i][j] = tmp[j];
-        }
-        //cout << "RIGHT" << endl;
-        //Print();
-        break;
-    case LEFT:
-        for (int i = 0; i < n; i++)
-        {
-			vector<int> tmp;
-			for (int j = 0; j < n; j++)
-                tmp.push_back(board[i][j]);
-
-			// 0이 아닌 수들을 모두 앞으로 당긴다.
-			stable_partition(tmp.begin(), tmp.end(), [](int x) {return x != 0; });
-
-			// 같은 수를 만나면 합친다.
-            for (int j = 0; j < n - 1; j++)
-            {
+		}
+		else
+		{
+			for (int j = 0; j < n - 1; j++)
+			{
 				if (tmp[j] == tmp[j + 1] && tmp[j] != 0)
 				{
-                    tmp[j] *= 2;
-                    tmp[j + 1] = 0;
-                    j++; // 합쳤으니 다음 수는 건너뛴다.
-                }
-            }
+					tmp[j] = 0;
+					tmp[j + 1] *= 2;
+					j++;
+				}
+				else if (tmp[j] == 0) break;
+			}
+		}
 
-            // 0이 아닌 수들을 모두 앞으로 당긴다.
-            stable_partition(tmp.begin(), tmp.end(), [](int x) {return x != 0; });
+		// 합침 작업 수행 후 다시 0이 없도록 방향 이동
+		stable_partition(tmp.begin(), tmp.end(), [isZeroUp](int x) { return (isZeroUp ? x == 0 : x != 0); });
 
-            // 보드에 다시 넣는다.
-            for (int j = 0; j < n; j++)
-				board[i][j] = tmp[j];
-        }
-        //cout << "LEFT" << endl;
-        //Print();
-        break;
-    default:
-        break;
-    }
+		// 본래 열이나 행에 복사
+		for (int j = 0; j < n; j++)
+		{
+			if (isRow) board[i][j] = tmp[j];
+			else board[j][i] = tmp[j];
+		}
+	}
 }
 
 
@@ -173,7 +97,7 @@ void backtracking(int cnt)
     {
         // 원하는 방향으로 전체 블록을 옮긴다
         Move(i);
-		backtracking(cnt + 1);
+        backtracking(cnt + 1);
         board = tmp;
     }
 }
@@ -187,9 +111,9 @@ int main() {
     {
         for (int j = 0; j < n; j++)
         {
-			cin >> board[i][j];
-		}
-	}
+            cin >> board[i][j];
+        }
+    }
 
     backtracking(0);
 
